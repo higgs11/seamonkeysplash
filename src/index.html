@@ -5,13 +5,16 @@
   <body>
     {% for control in controls %}              
       <b>{{ control.name }}</b>: 
-      <form action="/toggle" method="post">
-      	<input type="hidden" name="toggleid" value={{ control.deviceid}}>      	
-        <div><input type="submit" value="Switch"></div>
-      </form>
-      <blockquote>Device On: {{ control.onstate|escape }}</blockquote>
-      <blockquote>Power: {{ control.power|escape }} Watts</blockquote>
-      <blockquote>Device ID: {{ control.deviceid|escape }}</blockquote>    
+      <form action="/addwin" method="post">
+      	<input type="hidden" name="name" value={{ control.name}}>      	
+        <div><input type="submit" value="Add Win"></div>
+      </form>   
+      <form action="/addloss" method="post">
+      	<input type="hidden" name="name" value={{ control.name}}>      	
+        <div><input type="submit" value="Add Loss"></div>
+      </form>      
+      <blockquote>Wins: {{ control.wins|escape }} </blockquote>   
+      <blockquote>Losses: {{ control.losses|escape }} </blockquote>   
       {% if control.author %}
         <blockquote>Author: {{ control.author|escape }}</blockquote>
       {% endif %}              
@@ -22,9 +25,7 @@
 	<BR>
 	<b>Add Monker</b>:
     <form action="/submit" method="post">
-      Name:<div><textarea name="name" rows="1" cols="60"></textarea></div>
-      ID:<div><textarea name="deviceid" rows="1" cols="60"></textarea></div>
-      State:<div><textarea name="onstate" rows="1" cols="60"></textarea></div>      
+      Name:<div><textarea name="name" rows="1" cols="60"></textarea></div>      
       <div><input type="submit" value="Submit"></div>
     </form>
 

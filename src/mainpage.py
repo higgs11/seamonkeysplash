@@ -34,35 +34,42 @@ class Submit(webapp.RequestHandler):
         if(users.get_current_user()):
             contModule.author = users.get_current_user()
             
-        contModule.name = self.request.get('name')
-        contModule.deviceid = int(self.request.get('deviceid'))
-        
-        sameidresults = db.GqlQuery("SELECT * FROM ControlModule WHERE deviceid = :1", contModule.deviceid)
-        for result in sameidresults:
-            result.delete()
-        
-        onState = self.request.get('onstate')
-        contModule.onstate = ((onState == 'on') or (onState == 'true') or (onState == 'On') or (onState == 'True'))
+        contModule.name = self.request.get('name')      
+        contModule.wins = 0
+        contModule.losses = 0
         
         contModule.put()
         self.redirect('/')
         
-class Toggle(webapp.RequestHandler):
+class AddWin(webapp.RequestHandler):
     def post(self):
         
-        id = int(self.request.get('toggleid'))
+        name = self.request.get('name')
         
-        sameidresults = db.GqlQuery("SELECT * FROM ControlModule WHERE deviceid = :1", id)
+        sameidresults = db.GqlQuery("SELECT * FROM ControlModule WHERE name = :1", name)
         for result in sameidresults:
-            result.onstate = not result.onstate
+            result.wins = result.wins + 1
             result.put()
         
-        self.redirect('/')        
+        self.redirect('/')
+        
+class AddLoss(webapp.RequestHandler):
+    def post(self):
+        
+        name = self.request.get('name')
+        
+        sameidresults = db.GqlQuery("SELECT * FROM ControlModule WHERE name = :1", name)
+        for result in sameidresults:
+            result.losses = result.losses + 1
+            result.put()
+        
+        self.redirect('/')                   
   
 application = webapp.WSGIApplication(
                                      [('/', MainPage),
                                       ('/submit', Submit),
-                                      ('/toggle', Toggle)],
+                                      ('/addwin', AddWin),
+                                      ('/addloss', AddLoss)],
                                      debug=True)
 
 
